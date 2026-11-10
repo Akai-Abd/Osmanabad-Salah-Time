@@ -55,7 +55,7 @@ Timings adapt automatically based on verified district offsets from Osmanabad ci
 | **Kalamb** | کلمب | कलंब | **+1 min** |
 | **Terkheda** | ترکھیڑا | तेरखेडा | **+1 min** |
 | **Washi** | واشی | वाशी | **+1 min** |
-| **Bhum** | بھوم | भूम | **+2 min** |
+| **Bhoom** | بھوم | भूम | **+2 min** |
 | **Paranda** | پرنڈا | परंडा | **+2 min** |
 
 ---
