@@ -3,7 +3,7 @@
 > **Document Version:** 2.0 (Production Reference & Specification)  
 > **Status:** Active / Production-Ready  
 > **Target Release:** Q1 2026 – Q4 2026 (Operational Cycle 1447–1448 AH)  
-> **Target Region:** Osmanabad (Dharashiv) District, Maharashtra, India  
+> **Target Region:** Osmanabad District, Maharashtra, India  
 > **Primary Repository:** [Osmanabad-Salah-TIme](file:///media/akai/NFORCE/Osmanabad-Salah-TIme)
 
 ---
@@ -614,3 +614,4 @@ To add a new locality to Osmanabad district:
 | :--- | :--- | :--- | :--- |
 | **1.0** | 2026-11-09 | Engineering Team | Initial reference architecture and baseline specification. |
 | **2.0** | 2026-11-11 | Staff Systems Architect | Complete production PRD overhaul: added Table View mode specifications, Flutter Android APK wrapper architecture, 86-key translation registry, leap-year calculations, pre-dawn state machine boundary resolution, WCAG 2.1 AA benchmarks, testing strategy, and annual rollover playbook. |
+
