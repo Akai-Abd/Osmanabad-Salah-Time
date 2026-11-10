@@ -5,7 +5,7 @@
 <h1 align="center">Osmanabad Salah Time</h1>
 
 <p align="center">
-  <strong>مواقيت الصلاة لعثمان آباد | उस्मानाबाद नमाज़ का समय | Dharashiv District Prayer Times</strong>
+  <strong>مواقيت الصلاة لعثمان آباد | उस्मानाबाद नमाज़ का समय | Osmanabad District Prayer Times</strong>
 </p>
 
 <p align="center">
