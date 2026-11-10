@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  A lightweight, offline-first Progressive Web App (PWA) and Android APK providing accurate daily Islamic prayer times, prohibited prayer intervals, Hijri calendar tracking, and monthly timetable cards for Osmanabad (Dharashiv) district.
+  A lightweight, offline-first Progressive Web App (PWA) and Android APK providing accurate daily Islamic prayer times, prohibited prayer intervals, Hijri calendar tracking, and monthly timetable cards for Osmanabad District.
 </p>
 
 <p align="center">
