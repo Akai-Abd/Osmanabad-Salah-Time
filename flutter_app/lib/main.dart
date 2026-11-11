@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'updater.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,9 @@ class _SalahWebViewPageState extends State<SalahWebViewPage> {
   void initState() {
     super.initState();
     _startServerAndLoad();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) checkAppUpdate(context);
+    });
   }
 
   Future<void> _startServerAndLoad() async {
