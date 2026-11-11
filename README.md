@@ -13,26 +13,28 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Version-1.0.2-blue" alt="Version 1.0.2" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa&logoColor=white" alt="PWA Ready" />
   <img src="https://img.shields.io/badge/Flutter-Android_APK-02569B?logo=flutter&logoColor=white" alt="Flutter Android" />
   <img src="https://img.shields.io/badge/Languages-English%20%7C%20%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80%20%7C%20%D8%A7%D8%B1%D8%AF%D9%88-success" alt="Multi-language" />
-  <img src="https://img.shields.io/badge/Cloudflare_Pages-Deployment-F38020?logo=cloudflare&logoColor=white" alt="Cloudflare Pages" />
+  <img src="https://img.shields.io/badge/Cloudflare_Workers-Static_Assets-F38020?logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
 </p>
 
 ---
 
 ## ✨ Features
 
-- **⏱️ Accurate Daily Prayer Timings**: Live clock, next prayer countdown, and start times for Fajr, Dhuhr, Asr, Maghrib, and Isha calculated specifically for Osmanabad.
-- **🚫 Forbidden / Makruh Prayer Indicators**: Real-time warnings and countdowns during sunrise (Tulu), solar noon (Zawal), and sunset (Ghurub).
+- **⏱️ Daily Prayer Timings**: Live clock, active period status, next prayer countdown, day navigation with date picker, and Friday Jumu'ah timing for Fajr, Sunrise, Zuhr, Asr, Maghrib, and Isha.
+- **🚫 Forbidden / Makruh & Nafl Indicators**: Real-time warnings during sunrise (Tulu), solar noon (Zawal), and sunset (Ghurub), plus Ishraq / Chasht start guidance.
 - **📍 Village & Taluka Offset Support**: Instant minute adjustments (-2 to +2 min) for 15 towns and villages across Osmanabad district.
-- **🌙 Dual Gregorian & Hijri Calendar**: Seamless Hijri month calculations with local moon-sighting alignments and Umalqura astronomical fallback.
-- **📅 Monthly Timetable Cards & PDFs**: Full high-resolution timetable images per language with pinch-to-zoom modal viewer and downloadable print-ready PDFs.
-- **🌐 Trilingual & Native RTL**: Full support for English, Hindi (हिन्दी), and Urdu (اردو) with right-to-left layout adjustments.
-- **📶 Offline First (PWA)**: Built-in service worker caches core assets and timetable images for 100% offline access.
-- **📱 Android APK Packaging**: Ready-to-build Flutter WebView wrapper bundling the app as a native standalone Android APK.
+- **🌙 Dual Gregorian & Hijri Calendar**: Hijri calendar powered by local moon-sighting month starts with `islamic-umalqura` fallback.
+- **📅 Monthly Timetable (Table, Poster & PDFs)**: Village-adjusted monthly table (with today auto-scroll and leap-year Feb 29 support), language-specific poster images with pinch/wheel zoom viewer, and downloadable PDFs.
+- **🎨 7 Built-in Themes**: 3 light themes (Classic Blue, Emerald Green, Desert Gold) and 4 dark themes (Midnight Dark, Emerald Dark, Desert Gold Dark, Classic Maroon Dark) persisted locally.
+- **🌐 Trilingual & Native RTL**: Full support for English, Hindi (हिन्दी), and Urdu (اردو) with RTL layout and LTR-isolated time formatting.
+- **📶 Offline First (PWA) & Web Update Check**: Service worker caches core assets and timetable posters for offline use, with manual update checking in Settings via `version.json`.
+- **📱 Android APK & OTA Updates**: Flutter WebView wrapper serving bundled web assets over a fixed-port local HTTP server (`127.0.0.1:48753`) to preserve `localStorage`, plus automatic and manual in-app APK updates via GitHub Releases.
 
 ---
 
@@ -55,7 +57,7 @@ Timings adapt automatically based on verified district offsets from Osmanabad ci
 | **Kalamb** | کلمب | कलंब | **+1 min** |
 | **Terkheda** | ترکھیڑا | तेरखेडा | **+1 min** |
 | **Washi** | واشی | वाशी | **+1 min** |
-| **Bhoom** | بھوم | भूम | **+2 min** |
+| **Bhum** | بھوم | भूम | **+2 min** |
 | **Paranda** | پرنڈا | परंडा | **+2 min** |
 
 ---
@@ -63,32 +65,40 @@ Timings adapt automatically based on verified district offsets from Osmanabad ci
 ## 🛠️ Tech Stack
 
 - **Frontend**: [React 19](https://react.dev/), [Vite 8](https://vitejs.dev/)
-- **Icons & UI**: [Lucide React](https://lucide.dev/), Tailwind-like CSS utilities
-- **PWA**: Service Worker (`sw.js`) & Web App Manifest
-- **Mobile Wrapper**: [Flutter](https://flutter.dev/) (`webview_flutter`)
-- **Hosting / Edge**: [Cloudflare Pages](https://pages.cloudflare.com/) via [Wrangler](https://developers.cloudflare.com/workers/wrangler/)
+- **Icons & Styling**: [Lucide React](https://lucide.dev/), custom CSS with CSS variables (`data-theme` theming)
+- **PWA**: Service Worker (`public/sw.js`) & Web App Manifest (`public/manifest.json`)
+- **Mobile Wrapper**: [Flutter](https://flutter.dev/) (`webview_flutter`, `ota_update`, `package_info_plus`, `http`)
+- **Hosting / Edge**: [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) Static Assets via [Wrangler](https://developers.cloudflare.com/workers/wrangler/)
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-├── flutter_app/          # Flutter Android project (local WebView shell)
+├── flutter_app/          # Flutter Android wrapper (local WebView server & OTA updater)
+│   ├── lib/              # main.dart (HTTP server + JS bridge), updater.dart (OTA updates)
+│   ├── test/             # Widget & updater unit tests
+│   └── pubspec.yaml      # Flutter dependencies & app version (1.0.2+3)
 ├── public/
 │   ├── icons/            # App icons (192px, 512px, maskable, apple-touch)
-│   ├── timetable/        # Monthly timetable cards (en, hi, ur) & PDF files
+│   ├── timetable/        # Monthly timetable posters (en, hi, ur) & PDF files
 │   ├── manifest.json     # PWA manifest
 │   └── sw.js             # Service worker for offline caching
 ├── src/
 │   ├── components/       # UI components (PrayerCard, Calendar, Images, Settings)
-│   ├── data/             # Prayer schedules, village offsets, translations
+│   ├── data/             # Prayer schedules, Hijri month starts, village offsets, translations, config
 │   ├── pages/            # Home dashboard
-│   ├── utils/            # Time calculations, Hijri date logic, storage helpers
-│   ├── App.jsx           # App root & language context provider
-│   ├── index.css         # Styling & responsive design system
-│   └── main.jsx          # Entry point & PWA registration
+│   ├── utils/            # Time calculations, periods, Hijri date logic, settings & i18n
+│   ├── App.jsx           # App root, tab navigation & language picker
+│   ├── index.css         # Themes & responsive styling
+│   └── main.jsx          # Entry point & PWA service worker registration
+├── eslint.config.js      # ESLint configuration
+├── index.html            # HTML entry template
+├── package.json          # NPM scripts & dependencies
 ├── Salah-Timing.md       # Product requirement document & architecture specs
-└── package.json          # NPM scripts & dependencies
+├── version.json          # Shared release metadata for Web & Android OTA update checks
+├── vite.config.js        # Vite configuration
+└── wrangler.jsonc        # Cloudflare Workers static assets configuration
 ```
 
 ---
@@ -97,7 +107,7 @@ Timings adapt automatically based on verified district offsets from Osmanabad ci
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or higher)
+- [Node.js](https://nodejs.org/) (v20.19+ or v22.13+)
 - [npm](https://www.npmjs.com/) (v9 or higher)
 - *(Optional for APK)* [Flutter SDK](https://docs.flutter.dev/get-started/install) & Android Studio
 
@@ -105,8 +115,8 @@ Timings adapt automatically based on verified district offsets from Osmanabad ci
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/osmanabad-salah-time.git
-cd osmanabad-salah-time
+git clone https://github.com/Akai-Abd/Osmanabad-Salah-Time.git
+cd Osmanabad-Salah-Time
 
 # Install dependencies
 npm install
@@ -130,12 +140,12 @@ Open the displayed URL (usually `http://localhost:5173`) in your browser.
 | `npm run build` | Compiles and bundles production web assets into `dist/` |
 | `npm run preview` | Locally previews the production build |
 | `npm run lint` | Runs ESLint checks |
-| `npm run deploy` | Builds the app and publishes it to Cloudflare Pages |
+| `npm run deploy` | Builds the app and deploys static assets to Cloudflare Workers |
 | `npm run build:apk` | Syncs `dist/` to Flutter assets and builds a release Android APK |
 
 ---
 
-## 📱 Building the Android APK
+## 📱 Android APK & Releases
 
 To generate an offline-bundled Android APK:
 
@@ -145,6 +155,14 @@ npm run build:apk
 
 The APK will be generated at:
 `flutter_app/build/app/outputs/flutter-apk/app-release.apk`
+
+Run Flutter tests with:
+
+```bash
+cd flutter_app && flutter test
+```
+
+Release metadata for both web and Android OTA updates is tracked in [`version.json`](version.json) and `flutter_app/pubspec.yaml`.
 
 ---
 [MIT License](LICENSE).

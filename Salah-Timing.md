@@ -1,10 +1,10 @@
 # Salah-Timing — Production Requirement Document (PRD)
 
-> **Document Version:** 2.0 (Production Reference & Specification)  
+> **Document Version:** 2.1 (Current State Sync — App v1.0.2)  
 > **Status:** Active / Production-Ready  
 > **Target Release:** Q1 2026 – Q4 2026 (Operational Cycle 1447–1448 AH)  
 > **Target Region:** Osmanabad District, Maharashtra, India  
-> **Primary Repository:** [Osmanabad-Salah-TIme](file:///media/akai/NFORCE/Osmanabad-Salah-TIme)
+> **Primary Repository:** [Osmanabad-Salah-Time](https://github.com/Akai-Abd/Osmanabad-Salah-Time)
 
 ---
 
@@ -25,8 +25,8 @@ The application is engineered for complete resilience under poor or non-existent
 | **G4** | 100% Offline Autonomy | Core scheduling, offsets, calendar conversion, and timetable table views operate without network access. | **High** |
 | **G5** | Trilingual & Native RTL Parity | Instant language switching (EN/HI/UR) with zero layout shearing and correct numerical directionality. | **High** |
 | **G6** | Dual-Mode Monthly Timetables | Provide both an interactive data table (with leap-year handling) and high-res printable poster images with pinch-zoom. | **Medium** |
-| **G7** | Dual Packaging (PWA + Android APK) | Support standard web browser installation and provide standalone Android APK wrapper for app stores/sideloading. | **Medium** |
-| **G8** | Accessible & Themeable UI | Support 4 contrast-compliant color themes (Classic, Emerald, Amber, Dark) with dynamic browser chrome syncing. | **Low** |
+| **G7** | Dual Packaging & OTA Updates | Support PWA web installation, standalone Android APK wrapper, and in-app update checks via `version.json`. | **Medium** |
+| **G8** | Accessible & Themeable UI | Support 7 contrast-compliant light & dark themes with dynamic browser `<meta name="theme-color">` syncing. | **Low** |
 
 ### 1.3 Target Audience & Personas
 1. **Local Resident / Daily Practitioner:** Mobile user in Osmanabad city or nearby villages checking daily prayer windows, remaining time to next Salah, and prohibited prayer times before offering *Nafl* prayers.
@@ -52,8 +52,8 @@ The application is engineered for complete resilience under poor or non-existent
 ```mermaid
 flowchart TD
     subgraph Distribution["Distribution Channels"]
-        WEB["Cloudflare Pages (PWA Web)"]
-        APK["Flutter Android APK Shell"]
+        WEB["Cloudflare Workers\n(Static Assets via Wrangler)"]
+        APK["Flutter Android APK Shell\n(v1.0.2+3 + OTA Updater)"]
     end
 
     subgraph ClientShell["Client Runtime (Browser / WebView)"]
@@ -67,7 +67,7 @@ flowchart TD
         HOME["pages/Home.jsx\n(Clock, Hero, Countdown, Cards)"]
         TT["components/Images.jsx\n(Table Mode + Poster Mode + Zoom)"]
         CAL["components/Calendar.jsx\n(Hijri Grid, Moon-Sighting Range)"]
-        SET["components/Settings.jsx\n(Lang, Village, Theme, About)"]
+        SET["components/Settings.jsx\n(Lang, Village, 7 Themes, Updates, About)"]
         CARD["components/PrayerCard.jsx\n(Current, Next, Past States)"]
     end
 
@@ -80,16 +80,17 @@ flowchart TD
         STORE["utils/settings.js\n(localStorage + Memory Fallback)"]
     end
 
-    subgraph DataStore["Static Data Assets"]
-        PT_DATA["data/prayerTimes.js\n(365 Days x 6 Coordinates)"]
+    subgraph DataStore["Static Data & Release Metadata"]
+        PT_DATA["data/prayerTimes.js\n(365 Days x 6 Times)"]
         HM_DATA["data/hijriMonths.js\n(Confirmed Moon Sightings)"]
         VL_DATA["data/villages.js\n(15 Localities + Offsets)"]
-        TR_DATA["data/translations.js\n(86 Keys x 3 Locales)"]
+        TR_DATA["data/translations.js\n(91 Keys x 3 Locales)"]
         CFG_DATA["data/config.js\n(Tuning Constants)"]
+        VER_DATA["version.json\n(Web & Android Update Manifest)"]
     end
 
     WEB --> HTML
-    APK -->|"Embedded localhost:8080"| HTML
+    APK -->|"Embedded 127.0.0.1:48753"| HTML
     HTML --> ENTRY --> SHELL
     ENTRY --> SW
     SHELL --> HOME & TT & CAL & SET
@@ -97,7 +98,7 @@ flowchart TD
     HOME --> TIMES & PERIODS & HIJRI & FMT & I18N
     TT --> TIMES & STORE & I18N
     CAL --> HIJRI & I18N
-    SET --> STORE & VL_DATA & I18N & CFG_DATA
+    SET --> STORE & VL_DATA & I18N & CFG_DATA & VER_DATA
     TIMES --> PT_DATA & STORE
     PERIODS --> CFG_DATA
     HIJRI --> HM_DATA & CFG_DATA
@@ -111,27 +112,36 @@ flowchart TD
 | **Runtime / Library** | React | `^19.3.1` | Declarative UI, state management, zero runtime overhead |
 | **DOM Renderer** | React DOM | `^19.3.1` | Client mounting & React Portal for image zoom modal |
 | **Iconography** | Lucide React | `^1.66.0` | Lightweight SVG icons |
-| **Build Engine** | Vite | `^8.3.5` | Fast ESM HMR and tree-shaking production bundler |
-| **Mobile Packaging** | Flutter & WebView | `webview_flutter ^4.10.0` | Standalone native Android APK with embedded local HTTP server |
-| **Styles / Design System** | Pure CSS3 | Custom Properties (`:root`, `[data-theme]`) | Zero runtime styling, theme switching, responsive layouts |
-| **Linter** | ESLint | `^10.13.0` (Flat Config) | Code quality, React hooks rules enforcement |
+| **Build Engine** | Vite | `^8.3.5` | Fast ESM HMR and tree-shaking production bundler (`base: './'`) |
+| **Mobile Packaging** | Flutter & WebView | `webview_flutter ^4.14.1`, `ota_update ^7.1.0`, `package_info_plus ^8.0.0`, `http ^1.2.0` | Standalone native Android APK (`1.0.2+3`) with local HTTP server (`dart:io`) & OTA updater |
+| **Styles / Design System** | Pure CSS3 | Custom Properties (`:root`, `[data-theme]`) | Zero runtime styling, 7 light/dark themes, responsive layouts |
+| **Linter** | ESLint | `^10.13.0` (Flat Config) | Code quality, React hooks & refresh rules enforcement |
 | **Offline Cache** | Custom Service Worker | Cache API (`salah-v4`) | Stale-while-revalidate & network-first fallback caching |
-| **Hosting Platform** | Cloudflare Pages | Global Edge Network | Static SPA hosting with zero server maintenance |
+| **Release Metadata** | JSON Manifest | `version.json` (`1.0.2`) | Shared Web SW/version check & Android OTA release pointer |
+| **Hosting Platform** | Cloudflare Workers | Static Assets via `wrangler ^4.158.0` (`wrangler.jsonc`) | Serverless static asset hosting on Cloudflare edge |
 
 ### 2.2 File & Repository Organization
 
 ```text
 ├── .gitignore                  # Git ignore rules
 ├── index.html                  # HTML5 entry with PWA headers & viewport locks
+├── LICENSE                     # MIT License
 ├── package.json                # Project manifest, scripts, and dependencies
+├── version.json                # Shared Web & Android OTA release metadata (1.0.2)
 ├── vite.config.js              # Vite configuration (relative base './' for WebView)
+├── wrangler.jsonc              # Cloudflare Workers static assets config (./dist)
 ├── eslint.config.js            # ESLint flat config with React plugin rules
 ├── README.md                   # Repository overview and setup guide
 ├── Salah-Timing.md             # This Production Requirement Document
 ├── flutter_app/                # Flutter native Android wrapper project
-│   ├── pubspec.yaml            # Flutter dependencies (webview_flutter, shelf)
-│   ├── lib/main.dart           # Local HTTP file server + WebView shell
-│   └── android/                # Android native gradle project & manifest
+│   ├── pubspec.yaml            # Flutter dependencies & version (1.0.2+3, Dart ^3.13.7)
+│   ├── lib/
+│   │   ├── main.dart           # Local HTTP server (127.0.0.1:48753), WebView & JS bridge
+│   │   └── updater.dart        # GitHub version.json checker & in-app APK OTA installer
+│   ├── test/
+│   │   ├── updater_test.dart   # Semver comparison unit tests (isNewerVersion)
+│   │   └── widget_test.dart    # App smoke test
+│   └── android/                # Android Gradle config (desugaring), manifest & OtaUpdateFileProvider
 ├── public/
 │   ├── sw.js                   # Service Worker (Cache version 'salah-v4')
 │   ├── manifest.json           # Web App Manifest for PWA installation
@@ -142,14 +152,14 @@ flowchart TD
 └── src/
     ├── main.jsx                # Application root, DOM bootstrap, asset pre-cache
     ├── App.jsx                 # App shell, language gate, popstate tab router
-    ├── index.css               # Complete stylesheet, CSS variables, 4 color themes
+    ├── index.css               # Complete stylesheet, CSS variables, 7 color themes
     ├── pages/
     │   └── Home.jsx            # Real-time dashboard, clock, next prayer, cards
     ├── components/
     │   ├── PrayerCard.jsx      # Individual prayer card component
     │   ├── Images.jsx          # Timetable view (Table mode + Poster mode + Modal)
     │   ├── Calendar.jsx        # Dual Hijri-Gregorian monthly grid
-    │   └── Settings.jsx        # Localization, village selector, theme picker, about
+    │   └── Settings.jsx        # Localization, village selector, 7 themes, updater, about
     ├── utils/
     │   ├── times.js            # Village minute offset and leap-year calculations
     │   ├── periods.js          # 9-period state machine & prohibited time rules
@@ -157,12 +167,12 @@ flowchart TD
     │   ├── i18n.jsx            # Localization context, t() function, RTL engine
     │   ├── formatTime.js       # 24h to 12h conversion with Unicode bidi isolation
     │   ├── toMinutes.js        # "HH:MM" string to minutes-from-midnight integer
-    │   └── settings.js         # Safe localStorage access with in-memory fallback
+    │   └── settings.js         # Safe localStorage access with in-memory fallback & theme sync
     └── data/
         ├── prayerTimes.js      # 365-day schedule matrix for Osmanabad
         ├── hijriMonths.js      # Verified local moon-sighting Hijri month boundaries
         ├── villages.js         # 15 district villages with minute offsets
-        ├── translations.js     # Trilingual translation dictionary (86 keys x 3)
+        ├── translations.js     # Trilingual translation dictionary (91 keys x 3)
         └── config.js           # Calculation constants and toggle flags
 ```
 
@@ -207,9 +217,9 @@ flowchart TD
 #### [FR-03] Dynamic Status Pill & Prohibited Time Alerts
 - **Hero Card Status Pill:** Renders a badge in the hero banner reflecting the currently active prayer window or prohibited state.
 - **Danger Periods (Makruh Times):**
-  - During prohibited prayer windows (**Sunrise**, **Zawal**, **Sunset**), the status pill MUST adopt the `.danger` class (red background `#C0392B`), display the `AlertTriangle` warning icon, and trigger an active CSS pulsing animation (`@keyframes alertPulse`).
+  - During prohibited prayer windows (**Sunrise**, **Zawal**, **Sunset**), the status pill adopts `.danger` (`rgba(235, 77, 75, 0.95)`), displays the `AlertTriangle` warning icon, and triggers an active CSS pulsing animation (`@keyframes alertPulse`).
 - **Informational Period (Ishraq/Chasht):**
-  - Between Sunrise + 20m and Zawal start, an informational status pill indicates the permitted Ishraq/Chasht period.
+  - Between Sunrise + 20m and Zawal start, the hero status pill shows `Ishraq / Chasht` and the `.hero-note-strip` displays the `ishraqNote` guidance.
 
 #### [FR-04] Countdown Timer & Midnight Rollover
 - **Countdown Computation:** Calculates the exact minutes remaining until the next upcoming prayer milestone.
@@ -222,7 +232,7 @@ flowchart TD
 - **Day Selector:** Left and right chevron buttons allow inspecting past or future prayer dates.
 - **RTL Chevron Inversion:** In Urdu RTL mode, chevron icons MUST swap direction so that logical "forward in time" aligns with natural reading order.
 - **Date Picker Input:** Hidden native `<input type="date">` accessible by tapping the date header for rapid jumping.
-- **Relative Day Badges:** Highlights `"Today"`, `"Yesterday"`, or `"Tomorrow"`. If viewing any non-today date, a `"Back to Today"` shortcut button MUST appear.
+- **Relative Day Badges:** Highlights `"Today"`, `"Yesterday"`, or `"Tomorrow"`. If viewing any non-today date, a `"Today"` (`.hero-today-btn`) shortcut button MUST appear to reset back to today.
 - **Hero Village Pill Button:** The hero card displays an interactive locality badge (e.g., `📍 Umarga -2m`). Clicking this button MUST programmatically trigger a `popstate` navigation event directly to the **Settings** tab.
 
 #### [FR-06] Prohibited (Makruh) Prayer Window Rules
@@ -269,7 +279,7 @@ flowchart TD
 - **Zoom Gestures:**
   - **Pinch-to-Zoom:** Two-finger touch gesture tracking distance delta, zooming smoothly from 1.0x up to 4.0x.
   - **Mouse Wheel Zoom:** Desktop wheel scrolling zooms in and out around pointer position.
-  - **On-Screen Controls:** Floating `+` and `−` buttons with zoom level readout (e.g., `2.5x`).
+  - **On-Screen Controls:** Floating `+` and `−` zoom buttons.
 - **Drag-to-Pan:** When zoom level $> 1.0\text{x}$, single pointer dragging allows panning across the image with strict bounding constraints to prevent panning out of view.
 - **Dismissal & Back-Button Sync:** Modal can be closed via the `✕` close button or by pressing the hardware/browser Back button (intercepted via History API `pushState` / `popstate`).
 
@@ -312,19 +322,30 @@ flowchart TD
 - Selection persisted under `localStorage` key `"village"`.
 
 #### [FR-17] Theme Engine & Browser Chrome Synchronization
-- 4 color palettes presented in a 2x2 grid with color preview swatches:
+- 7 color palettes presented in a 2-column `.theme-grid` with color preview swatches:
 
-| Theme ID | Name | Accent / Primary | Surface Color | Meta Theme-Color |
+| Theme ID | Display Name (`en`) | Primary / Accent | Surface Color | Meta Theme-Color |
 | :--- | :--- | :--- | :--- | :--- |
-| `light` | Classic | `#547FA5` (Steel Blue) | `#FFFFFF` | `#547FA5` |
-| `emerald` | Emerald | `#1E7E55` (Islamic Green) | `#FFFFFF` | `#1E7E55` |
-| `amber` | Amber | `#9E6C20` (Warm Gold) | `#FFFFFF` | `#9E6C20` |
-| `dark` | Dark | `#6FA3CF` (Sky Accent) | `#172636` | `#0F1B27` |
+| `light` | Classic Blue | `#547FA5` | `#FFFFFF` | `#547FA5` |
+| `emerald` | Emerald Green | `#1E7E55` | `#FFFFFF` | `#1E7E55` |
+| `amber` | Desert Gold | `#9E6C20` | `#FFFFFF` | `#9E6C20` |
+| `dark` | Midnight Dark | `#6FA3CF` | `#172636` | `#0F1B27` |
+| `emerald-dark` | Emerald Dark | `#2ECC71` | `#142920` | `#0C1A14` |
+| `amber-dark` | Desert Gold Dark | `#E6A23C` | `#261F14` | `#1A150D` |
+| `maroon-dark` | Classic Maroon Dark | `#E05370` | `#261419` | `#1A0D11` |
 
 - **Application:** Applies `data-theme="{id}"` on `document.documentElement` and synchronously updates `<meta name="theme-color">` to colorize the mobile browser status bar.
 
-#### [FR-18] About & Distribution Credits
-- **District Scope Notice:** Displays `districtOnly` disclaimer ("These timings are verified for Osmanabad district only").
+#### [FR-18] In-App Update Checking (Web/PWA & Android Bridge)
+- **Version Display:** Displays the bundled release version (`v{APP_VERSION}`) imported from [`version.json`](file:///media/akai/NFORCE/Osmanabad-Salah-TIme/version.json) alongside a `"Check for Updates"` button (`appUpdate`, `appVersion`, `checkForUpdates`, `checkingUpdate`).
+- **Android WebView Bridge:** When running inside the Flutter container (`window.FlutterApp?.postMessage`), posts `"checkUpdate"` to trigger native `checkAppUpdate(context, manual: true)`.
+- **Web / PWA Path:**
+  1. Queries `navigator.serviceWorker.getRegistration()` and calls `reg.update()` to detect `installing` or `waiting` service workers.
+  2. If no pending worker is found, fetches `version.json` from GitHub (`cache: "no-store"`) and compares against `APP_VERSION`.
+  3. When an update is detected, deletes entries in `caches` and reloads the page; otherwise displays status (`App is up to date (v{APP_VERSION}).` or `Could not reach update server.`).
+
+#### [FR-19] About & Distribution Credits
+- **District Scope Notice:** Displays `districtOnly` disclaimer ("These timings are for Osmanabad district only.").
 - **Scholarly Credit Flag:** Configurable credit line controlled via `SHOW_CREDIT` constant in [`config.js`](file:///media/akai/NFORCE/Osmanabad-Salah-TIme/src/data/config.js).
 - **Installation Instructions:** Explains PWA Add to Home Screen process (`installNote`).
 - **Auto-Save Confirmation:** Informs users that preferences are saved automatically on device (`savedNote`).
@@ -333,7 +354,7 @@ flowchart TD
 
 ### 3.6 Application Shell & Navigation
 
-#### [FR-19] History API Tab Navigation
+#### [FR-20] History API Tab Navigation
 - **4 Primary Tabs:** **Home** (`HomeIcon`), **Timetable** (`BookOpen`), **Calendar** (`CalendarDays`), **Settings** (`SettingsIcon`).
 - **History Stack Handling:**
   - Home to Tab: `history.pushState({ tab: id }, "")`
@@ -341,11 +362,14 @@ flowchart TD
   - Tab to Home: `history.back()`
 - **Hardware Back Button:** Listens for `window.addEventListener("popstate")` ensuring the Android system back gesture smoothly navigates back to Home rather than exiting the application.
 
-#### [FR-20] Native Android APK Wrapper (Flutter Shell)
-- **Local Embedded Server:** Uses Flutter's internal `HttpServer` binding to `127.0.0.1` serving bundled assets from `flutter_app/assets/dist/`.
-- **WebView Container:** Powered by `webview_flutter` loading `http://127.0.0.1:{port}/index.html`.
-- **System Chrome Customization:** Sets Android status bar color to `#547FA5` with light icons.
-- **Build Pipeline:** Automated via `npm run build:apk` which builds Vite assets, copies them to the Flutter asset directory, and invokes `flutter build apk --release`.
+#### [FR-21] Native Android APK Wrapper & OTA Updater (Flutter Shell)
+- **Fixed-Port Embedded Server:** Uses `dart:io` `HttpServer` binding to `127.0.0.1` on fixed port `48753` (`shared: true`, falling back to ephemeral port `0` if busy) serving `assets/dist/` so the WebView origin remains constant and preserves `localStorage` across launches.
+- **WebView Container & JS Channel:** Powered by `webview_flutter` loading `http://127.0.0.1:$port/`, registering the `FlutterApp` JavaScriptChannel (`checkUpdate`) and handling hardware back navigation via `PopScope`.
+- **Automatic & Manual OTA Updates ([`updater.dart`](file:///media/akai/NFORCE/Osmanabad-Salah-TIme/flutter_app/lib/updater.dart)):**
+  - Runs automatically after first frame (`initState`) and manually via Settings -> `FlutterApp` bridge.
+  - Fetches `https://raw.githubusercontent.com/Akai-Abd/Osmanabad-Salah-Time/main/version.json`, compares semver via `isNewerVersion(info.version, latestVersion)`, displays an `AlertDialog` with release notes, and streams the APK download/install via `ota_update` (`OtaUpdateFileProvider` + `REQUEST_INSTALL_PACKAGES`).
+- **System Chrome Customization:** Sets Android status bar and scaffold background color to `#547FA5` with light icons.
+- **Build Pipeline:** Automated via `npm run build:apk` which builds Vite assets, copies `dist/` to `flutter_app/assets/dist/`, and invokes `flutter build apk --release`.
 
 ---
 
@@ -359,7 +383,7 @@ The master calendar stores 365 pre-calculated daily records for Osmanabad city c
 // Data Structure: Object indexed by month (1-12) containing arrays of 6-tuples
 export const prayerTimes = {
   1: [ // January (31 days)
-    ["05:42", "06:58", "12:35", "15:47", "18:09", "19:25"], // Jan 1: [Fajr, Sunrise, Zuhr, Asr, Maghrib, Isha]
+    ["05:40", "06:57", "12:34", "16:25", "18:06", "19:19"], // Jan 1: [Fajr, Sunrise, Zuhr, Asr, Maghrib, Isha]
     // ... 31 entries
   ],
   2: [ /* 28 entries */ ],
@@ -401,11 +425,11 @@ Verified crescent sighting records for Hijri years 1447 and 1448 AH:
 | 1447 | 11 | Dhul Qadah | `2026-04-19` | Confirmed Sight |
 | 1447 | 12 | Dhul Hijjah | `2026-05-19` | Confirmed Sight |
 | 1448 | 1 | Muharram | `2026-06-17` | Confirmed Sight |
-| 1448 | 2 | Safar | `2026-07-17` | Confirmed Sight |
+| 1448 | 2 | Safar | `2026-07-16` | Confirmed Sight |
 | 1448 | 3 | Rabi I | `2026-08-15` | Confirmed Sight |
-| 1448 | 4 | Rabi II | `2026-09-14` | Confirmed Sight |
+| 1448 | 4 | Rabi II | `2026-09-13` | Confirmed Sight |
 | 1448 | 5 | Jumada I | `2026-10-13` | Confirmed Sight |
-| 1448 | 6 | Jumada II | `2026-11-12` | Confirmed Sight |
+| 1448 | 6 | Jumada II | `2026-11-11` | Confirmed Sight |
 | 1448 | 7 | Rajab | `2026-12-11` | Confirmed Sight |
 
 ### 4.4 Tunable System Parameters (`config.js`)
@@ -418,9 +442,9 @@ Verified crescent sighting records for Hijri years 1447 and 1448 AH:
 | `HIJRI_SHIFT` | `-1` | Day offset calibration applied to `Intl` Umm al-Qura fallback calculation. |
 | `SHOW_CREDIT` | `false` | Boolean toggle controlling whether donor/author credit displays in Settings. |
 
-### 4.5 Complete Trilingual Translation Registry (86 Keys per Locale)
+### 4.5 Complete Trilingual Translation Registry (91 Keys per Locale)
 
-The application maintains 86 verified keys across `en`, `hi`, and `ur`:
+The application maintains 91 verified keys across `en`, `hi`, and `ur`:
 
 | Category | Keys |
 | :--- | :--- |
@@ -432,7 +456,8 @@ The application maintains 86 verified keys across `en`, `hi`, and `ur`:
 | **Card Status & Timers**| `current`, `upcoming`, `fajrTomorrow`, `duration` (interpolates `{h}`, `{m}`) |
 | **Relative Days** | `yesterday`, `today`, `tomorrow` |
 | **Locality / Offsets** | `yourVillage`, `selectVillage`, `noVillage`, `sameAsCity`, `earlier` (`{n}`), `later` (`{n}`), `villageNotice` |
-| **Theme Engine** | `theme`, `light`, `dark`, `themeClassic`, `themeEmerald`, `themeAmber`, `themeDark` |
+| **Theme Engine** | `theme`, `themeClassic`, `themeEmerald`, `themeAmber`, `themeDark`, `themeEmeraldDark`, `themeAmberDark`, `themeMaroonDark` |
+| **App Updates** | `appUpdate`, `appVersion`, `checkForUpdates`, `checkingUpdate` |
 | **Gregorian Months** | `m1`, `m2`, `m3`, `m4`, `m5`, `m6`, `m7`, `m8`, `m9`, `m10`, `m11`, `m12` |
 | **Weekdays (Sun–Sat)** | `wd0`, `wd1`, `wd2`, `wd3`, `wd4`, `wd5`, `wd6` |
 | **Hijri Months (1–12)** | `hm1`, `hm2`, `hm3`, `hm4`, `hm5`, `hm6`, `hm7`, `hm8`, `hm9`, `hm10`, `hm11`, `hm12` |
@@ -527,8 +552,8 @@ ready.active?.postMessage({
 
 | Metric | Target Threshold | Measured / Expected | Enforcement Method |
 | :--- | :--- | :--- | :--- |
-| **Total JavaScript (Gzip)** | $< 90\text{ KB}$ | $\approx 64\text{ KB}$ | Vite rollup chunking analysis |
-| **Total CSS (Gzip)** | $< 5\text{ KB}$ | $\approx 3.8\text{ KB}$ | Single bundled stylesheet |
+| **Total JavaScript (Gzip)** | $< 90\text{ kB}$ | $\approx 85.4\text{ kB}$ (`dist/assets/index-*.js`) | Vite rollup chunking analysis |
+| **Total CSS (Gzip)** | $< 5\text{ kB}$ | $\approx 4.1\text{ kB}$ (`dist/assets/index-*.css`) | Single bundled stylesheet |
 | **Largest Contentful Paint (LCP)** | $< 1.2\text{ s}$ | $0.8\text{ s}$ on 4G | Zero web fonts; pre-rendered DOM |
 | **Cumulative Layout Shift (CLS)** | $\mathbf{0.000}$ | $0.000$ | Fixed dimensions & CSS grid reservations |
 | **Interaction to Next Paint (INP)** | $< 50\text{ ms}$ | $< 16\text{ ms}$ | Synchronous lightweight React state updates |
@@ -540,12 +565,12 @@ ready.active?.postMessage({
 - **Fail-Safe Storage Fallback:** If `localStorage` access is blocked (e.g., Safari Private Browsing quota exceeded), the app seamlessly degrades to an internal volatile `Map()` in [`settings.js`](file:///media/akai/NFORCE/Osmanabad-Salah-TIme/src/utils/settings.js).
 - **Recommended Content Security Policy (CSP):**
   ```http
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://raw.githubusercontent.com;
   ```
 
 ### 7.3 Accessibility & Internationalization (WCAG 2.1 AA)
 - **Minimum Touch Targets:** All interactive buttons, chips, and selectors maintain bounding boxes $\ge 44 \times 44\text{ px}$.
-- **Contrast Ratios:** Text colors across all 4 themes achieve WCAG AA contrast ratio $\ge 4.5:1$ against their respective surface backgrounds.
+- **Contrast Ratios:** Text colors across all 7 themes achieve WCAG AA contrast ratio $\ge 4.5:1$ against their respective surface backgrounds.
 - **Bidirectional Isolation:** All dynamic timestamps enforce Unicode bidi isolation via `\u2066` and `\u2069` escapes.
 - **Font Stack:** Uses native platform typography (`system-ui, -apple-system, sans-serif`) to ensure zero layout shift and flawless rendering of Devanagari and Urdu Naskh/Nastaliq glyphs.
 
@@ -553,7 +578,13 @@ ready.active?.postMessage({
 
 ## 8. Quality Assurance & Testing Matrix
 
-### 8.1 Automated Test Suites (Recommended Vitest Suite)
+### 8.1 Existing & Planned Automated Test Suites
+
+**Implemented (Flutter):**
+- [`flutter_app/test/updater_test.dart`](file:///media/akai/NFORCE/Osmanabad-Salah-TIme/flutter_app/test/updater_test.dart): 7 unit tests covering `isNewerVersion` semver comparisons (`v` prefix handling, major/minor/patch bumps, equal/older versions, differing segment lengths).
+- [`flutter_app/test/widget_test.dart`](file:///media/akai/NFORCE/Osmanabad-Salah-TIme/flutter_app/test/widget_test.dart): Smoke test verifying `MyApp` instantiation.
+
+**Planned / Recommended (Web JS Utilities — Vitest):**
 
 | Test Module | Coverage Scope | Critical Test Scenarios |
 | :--- | :--- | :--- |
@@ -585,8 +616,9 @@ flowchart TD
     D --> E["5. Replace Monthly Poster Images (36 Files) in public/timetable/"]
     E --> F["6. Replace Annual PDF Files (3 Files) in public/timetable/"]
     F --> G["7. Bump Cache Name in public/sw.js (e.g. salah-v4 -> salah-v5)"]
-    G --> H["8. Run npm run build && npm run deploy"]
-    H --> I["9. Run npm run build:apk for Android Standalone Release"]
+    G --> H["8. Bump version.json & flutter_app/pubspec.yaml"]
+    H --> I["9. Run npm run build && npm run deploy (Cloudflare Workers)"]
+    I --> J["10. Run npm run build:apk for Android Standalone Release"]
 ```
 
 ### 9.2 Adding a New Village / Locality
@@ -614,4 +646,5 @@ To add a new locality to Osmanabad district:
 | :--- | :--- | :--- | :--- |
 | **1.0** | 2026-11-09 | Engineering Team | Initial reference architecture and baseline specification. |
 | **2.0** | 2026-11-11 | Staff Systems Architect | Complete production PRD overhaul: added Table View mode specifications, Flutter Android APK wrapper architecture, 86-key translation registry, leap-year calculations, pre-dawn state machine boundary resolution, WCAG 2.1 AA benchmarks, testing strategy, and annual rollover playbook. |
+| **2.1** | 2026-11-12 | Engineering Sync | Synced PRD with v1.0.2 codebase: Cloudflare Workers (`wrangler.jsonc`), 7 light/dark themes, 91-key translation registry, Web & Android OTA update system (`version.json`, `updater.dart`, fixed port `48753`), Flutter test suite, exact `prayerTimes.js`/`hijriMonths.js` samples, and measured `dist/assets/` gzip sizes. |
 
