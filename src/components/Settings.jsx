@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { version as APP_VERSION } from "../../version.json";
 import { villages } from "../data/villages";
 import { SHOW_CREDIT } from "../data/config";
 import { getVillage, saveVillage, getTheme, saveTheme, applyTheme } from "../utils/settings";
@@ -16,28 +17,54 @@ function Settings() {
   function chooseVillage(id) { setVillageId(id); saveVillage(id); }
   function chooseTheme(x) { setTheme(x); saveTheme(x); applyTheme(x); }
 
-  function handleCheckUpdate() {
+  async function handleCheckUpdate() {
     setChecking(true);
     setUpdateStatus("");
 
     if (window.FlutterApp && typeof window.FlutterApp.postMessage === "function") {
       window.FlutterApp.postMessage("checkUpdate");
       setTimeout(() => setChecking(false), 2000);
-    } else {
-      fetch("https://raw.githubusercontent.com/Akai-Abd/Osmanabad-Salah-Time/main/version.json")
-        .then((res) => res.json())
-        .then((data) => {
-          setChecking(false);
-          if (data.version && data.version !== "1.0.2") {
-            setUpdateStatus(`Update available: v${data.version}`);
-          } else {
-            setUpdateStatus("App is up to date (v1.0.2).");
+      return;
+    }
+
+    try {
+      let hasUpdate = false;
+      if ("serviceWorker" in navigator) {
+        try {
+          const reg = await navigator.serviceWorker.getRegistration();
+          if (reg) {
+            await reg.update();
+            hasUpdate = Boolean(reg.installing || reg.waiting);
           }
-        })
-        .catch(() => {
-          setChecking(false);
-          setUpdateStatus("Could not reach update server.");
-        });
+        } catch {
+          // Fall back to version.json check when SW update check fails.
+        }
+      }
+
+      if (!hasUpdate) {
+        const res = await fetch(
+          "https://raw.githubusercontent.com/Akai-Abd/Osmanabad-Salah-Time/main/version.json",
+          { cache: "no-store" }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        hasUpdate = Boolean(data.version && data.version !== APP_VERSION);
+      }
+
+      if (hasUpdate) {
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+        window.location.reload();
+        return;
+      }
+
+      setUpdateStatus(`App is up to date (v${APP_VERSION}).`);
+    } catch {
+      setUpdateStatus("Could not reach update server.");
+    } finally {
+      setChecking(false);
     }
   }
 
@@ -104,7 +131,7 @@ function Settings() {
         <div className="update-row">
           <div>
             <span className="update-label">{t("appVersion")}</span>
-            <span className="update-badge">v1.0.2</span>
+            <span className="update-badge">v{APP_VERSION}</span>
           </div>
           <button
             type="button"
