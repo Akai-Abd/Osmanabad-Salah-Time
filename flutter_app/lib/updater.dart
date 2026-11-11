@@ -113,6 +113,13 @@ class _UpdateDialogState extends State<_UpdateDialog> {
               _progress = event.value ?? '0';
             });
           } else if (event.status == OtaStatus.INSTALLING) {
+            setState(() {
+              _progress = '100';
+            });
+            Future.delayed(const Duration(seconds: 1), () {
+              if (mounted) Navigator.of(context, rootNavigator: true).pop();
+            });
+          } else if (event.status == OtaStatus.INSTALLATION_DONE) {
             Navigator.of(context, rootNavigator: true).pop();
           } else if (event.status == OtaStatus.ALREADY_RUNNING_ERROR) {
             setState(() => _errorMessage = 'Update already in progress.');
@@ -166,7 +173,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             const SizedBox(height: 8),
             Center(
               child: Text(
-                'Downloading: $_progress%',
+                _progress == '100' ? 'Opening installer...' : 'Downloading: $_progress%',
                 style: const TextStyle(fontSize: 12),
               ),
             ),
