@@ -102,6 +102,14 @@ class _SalahWebViewPageState extends State<SalahWebViewPage> {
             },
           ),
         )
+        ..addJavaScriptChannel(
+          'FlutterApp',
+          onMessageReceived: (JavaScriptMessage message) {
+            if (message.message == 'checkUpdate' && mounted) {
+              checkAppUpdate(context, manual: true);
+            }
+          },
+        )
         ..loadRequest(Uri.parse('http://127.0.0.1:$port/'));
 
       if (mounted) {

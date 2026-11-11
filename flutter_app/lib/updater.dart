@@ -8,14 +8,21 @@ const String kVersionCheckUrl =
     'https://raw.githubusercontent.com/Akai-Abd/Osmanabad-Salah-Time/main/version.json';
 
 /// Checks if an app update is available and presents an update dialog.
-Future<void> checkAppUpdate(BuildContext context) async {
+Future<void> checkAppUpdate(BuildContext context, {bool manual = false}) async {
   try {
     final info = await PackageInfo.fromPlatform();
     final res = await http
         .get(Uri.parse(kVersionCheckUrl))
         .timeout(const Duration(seconds: 10));
 
-    if (res.statusCode != 200) return;
+    if (res.statusCode != 200) {
+      if (manual && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not reach update server. Check your connection.')),
+        );
+      }
+      return;
+    }
 
     final data = jsonDecode(res.body) as Map<String, dynamic>;
     final String latestVersion = (data['version'] ?? '').toString().trim();
@@ -34,9 +41,18 @@ Future<void> checkAppUpdate(BuildContext context) async {
           apkUrl: apkUrl,
         ),
       );
+    } else if (manual && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('App is up to date (v${info.version}).')),
+      );
     }
   } catch (e) {
     debugPrint('App update check skipped: $e');
+    if (manual && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Update check failed: $e')),
+      );
+    }
   }
 }
 

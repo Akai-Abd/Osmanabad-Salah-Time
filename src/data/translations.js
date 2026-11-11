@@ -35,6 +35,10 @@ export const translations = {
         hm1: "Muharram", hm2: "Safar", hm3: "Rabi I", hm4: "Rabi II", hm5: "Jumada I", hm6: "Jumada II",
         hm7: "Rajab", hm8: "Shaban", hm9: "Ramadan", hm10: "Shawwal", hm11: "Dhul Qadah", hm12: "Dhul Hijjah",
         districtOnly: "These timings are for Osmanabad district only.",
+        appUpdate: "App Updates",
+        appVersion: "Version",
+        checkForUpdates: "Check for Updates",
+        checkingUpdate: "Checking...",
 
     },
 
@@ -74,6 +78,10 @@ export const translations = {
         hm1: "मुहर्रम", hm2: "सफ़र", hm3: "रबीउल अव्वल", hm4: "रबीउस सानी", hm5: "जमादिउल अव्वल", hm6: "जमादिउस सानी",
         hm7: "रजब", hm8: "शाबान", hm9: "रमज़ान", hm10: "शव्वाल", hm11: "ज़ुल क़ादा", hm12: "ज़ुल हिज्जा",
         districtOnly: "ये समय सिर्फ़ उस्मानाबाद ज़िले के लिए हैं।",
+        appUpdate: "ऐप अपडेट",
+        appVersion: "वर्शन",
+        checkForUpdates: "अपडेट जाँचें",
+        checkingUpdate: "जाँच रहे हैं...",
     },
 
     ur: {
@@ -113,5 +121,9 @@ export const translations = {
         hm1: "محرم", hm2: "صفر", hm3: "ربیع الاول", hm4: "ربیع الثانی", hm5: "جمادی الاول", hm6: "جمادی الثانی",
         hm7: "رجب", hm8: "شعبان", hm9: "رمضان", hm10: "شوال", hm11: "ذیقعدہ", hm12: "ذوالحجہ",
         districtOnly: "یہ اوقات صرف ضلع عثمان آباد کے لیے ہیں۔",
+        appUpdate: "ایپ اپ ڈیٹ",
+        appVersion: "ورژن",
+        checkForUpdates: "اپ ڈیٹ چیک کریں",
+        checkingUpdate: "چیک ہو رہا ہے...",
     },
 };

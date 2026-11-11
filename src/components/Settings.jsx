@@ -8,11 +8,38 @@ function Settings() {
   const { lang, setLang, t } = useLang();
   const [villageId, setVillageId] = useState(getVillage() ? getVillage().id : "");
   const [theme, setTheme] = useState(getTheme());
+  const [checking, setChecking] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState("");
 
   const village = villages.find((v) => v.id === villageId);
 
   function chooseVillage(id) { setVillageId(id); saveVillage(id); }
   function chooseTheme(x) { setTheme(x); saveTheme(x); applyTheme(x); }
+
+  function handleCheckUpdate() {
+    setChecking(true);
+    setUpdateStatus("");
+
+    if (window.FlutterApp && typeof window.FlutterApp.postMessage === "function") {
+      window.FlutterApp.postMessage("checkUpdate");
+      setTimeout(() => setChecking(false), 2000);
+    } else {
+      fetch("https://raw.githubusercontent.com/Akai-Abd/Osmanabad-Salah-Time/main/version.json")
+        .then((res) => res.json())
+        .then((data) => {
+          setChecking(false);
+          if (data.version && data.version !== "1.0.1") {
+            setUpdateStatus(`Update available: v${data.version}`);
+          } else {
+            setUpdateStatus("App is up to date (v1.0.1).");
+          }
+        })
+        .catch(() => {
+          setChecking(false);
+          setUpdateStatus("Could not reach update server.");
+        });
+    }
+  }
 
   let villageNote = t("noVillage");
   if (village) {
@@ -67,6 +94,25 @@ function Settings() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="setting">
+        <h3>{t("appUpdate")}</h3>
+        <div className="update-row">
+          <div>
+            <span className="update-label">{t("appVersion")}</span>
+            <span className="update-badge">v1.0.1</span>
+          </div>
+          <button
+            type="button"
+            className="update-btn"
+            onClick={handleCheckUpdate}
+            disabled={checking}
+          >
+            {checking ? t("checkingUpdate") : t("checkForUpdates")}
+          </button>
+        </div>
+        {updateStatus && <p className="setting-note">{updateStatus}</p>}
       </div>
 
       <div className="setting">

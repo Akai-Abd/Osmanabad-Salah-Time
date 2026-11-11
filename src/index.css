@@ -1052,6 +1052,51 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
+.update-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.update-label {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-right: 8px;
+}
+
+.update-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.update-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.update-btn:active {
+    transform: scale(0.96);
+}
+
+.update-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
 /* Image viewer */
 .viewer {
     position: fixed;
