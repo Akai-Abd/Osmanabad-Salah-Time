@@ -61,7 +61,7 @@ class _SalahWebViewPageState extends State<SalahWebViewPage> {
       const fixedPort = 48753;
       try {
         _server = await HttpServer.bind(InternetAddress.loopbackIPv4, fixedPort, shared: true);
-      } catch (e) {
+      } catch (_) {
         _server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       }
       final port = _server!.port;

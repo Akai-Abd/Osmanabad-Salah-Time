@@ -69,6 +69,10 @@ body {
     background: var(--bg);
     color: var(--ink);
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .app {
@@ -111,7 +115,10 @@ body {
     pointer-events: none;
 }
 
-:root[data-theme="dark"] .hero-card {
+:root[data-theme="dark"] .hero-card,
+:root[data-theme="emerald-dark"] .hero-card,
+:root[data-theme="amber-dark"] .hero-card,
+:root[data-theme="maroon-dark"] .hero-card {
     border: 1px solid var(--border);
 }
 
@@ -380,7 +387,10 @@ body {
     color: var(--ink);
 }
 
-:root[data-theme="dark"] .prayer-tag.next {
+:root[data-theme="dark"] .prayer-tag.next,
+:root[data-theme="emerald-dark"] .prayer-tag.next,
+:root[data-theme="amber-dark"] .prayer-tag.next,
+:root[data-theme="maroon-dark"] .prayer-tag.next {
     background: var(--accent);
     color: #FFFFFF;
 }
@@ -429,58 +439,6 @@ body {
 
 .prayer-card.past .prayer-icon-box {
     opacity: 0.7;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.menu-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 14px;
-    min-height: 110px;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.15s ease, background-color 0.15s ease;
-}
-
-.menu-card h3 {
-    font-size: 1rem;
-}
-
-.menu-card p {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 6px;
-}
-
-.menu-card:active {
-    background: var(--border);
-    transform: scale(0.98);
-}
-
-.back {
-    border: none;
-    background: none;
-    color: var(--primary);
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 4px 0 14px;
-    cursor: pointer;
-}
-
-.date-input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface);
-    font-size: 1rem;
-    margin-bottom: 12px;
 }
 
 .footer {
@@ -949,15 +907,6 @@ body {
     --badge-ink: #0A1711;
 }
 
-:root[data-theme="emerald-dark"] .hero-card {
-    border: 1px solid var(--border);
-}
-
-:root[data-theme="emerald-dark"] .prayer-tag.next {
-    background: var(--accent);
-    color: #FFFFFF;
-}
-
 /* Desert Gold Dark */
 :root[data-theme="amber-dark"] {
     --bg: #1A150D;
@@ -977,15 +926,6 @@ body {
     --hero-shadow: rgba(0, 0, 0, 0.45);
     --badge-bg: #E6A23C;
     --badge-ink: #1A150D;
-}
-
-:root[data-theme="amber-dark"] .hero-card {
-    border: 1px solid var(--border);
-}
-
-:root[data-theme="amber-dark"] .prayer-tag.next {
-    background: var(--accent);
-    color: #FFFFFF;
 }
 
 /* Classic Maroon Dark */
@@ -1009,30 +949,10 @@ body {
     --badge-ink: #1A0D11;
 }
 
-:root[data-theme="maroon-dark"] .hero-card {
-    border: 1px solid var(--border);
-}
-
-:root[data-theme="maroon-dark"] .prayer-tag.next {
-    background: var(--accent);
-    color: #FFFFFF;
-}
-
-/* Current strip: red alert */
-.current-strip.danger {
-    background: var(--danger);
-    color: #fff;
-}
-
 .note {
     color: var(--muted);
     font-size: 0.85rem;
     margin: -2px 4px 10px;
-}
-
-.note.danger {
-    color: var(--danger);
-    font-weight: 600;
 }
 
 .notice {
@@ -1280,21 +1200,10 @@ body {
     transform: scale(0.98);
 }
 
-[dir="rtl"] .dates {
-    text-align: left;
-}
-
 .ltr {
     direction: ltr;
     unicode-bidi: isolate;
     display: inline-block;
-}
-
-body {
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 input,

@@ -23,7 +23,7 @@ export const translations = {
         sameAsCity: "Same as Osmanabad city time.",
         earlier: "{n} min earlier than city time.",
         later: "{n} min later than city time.",
-        theme: "Theme", light: "Light", dark: "Dark", language: "Language",
+        theme: "Theme", language: "Language",
         themeClassic: "Classic Blue", themeEmerald: "Emerald Green", themeAmber: "Desert Gold", themeDark: "Midnight Dark",
         themeEmeraldDark: "Emerald Dark", themeAmberDark: "Desert Gold Dark", themeMaroonDark: "Classic Maroon Dark",
         savedNote: "Your village, theme and language are saved on this device. If you clear your browser data, just select them again.",
@@ -40,7 +40,6 @@ export const translations = {
         appVersion: "Version",
         checkForUpdates: "Check for Updates",
         checkingUpdate: "Checking...",
-
     },
 
     hi: {
@@ -67,7 +66,7 @@ export const translations = {
         sameAsCity: "उस्मानाबाद शहर के समय जैसा ही।",
         earlier: "शहर के समय से {n} मिनट पहले।",
         later: "शहर के समय से {n} मिनट बाद।",
-        theme: "थीम", light: "लाइट", dark: "डार्क", language: "भाषा",
+        theme: "थीम", language: "भाषा",
         themeClassic: "क्लासिक नीला", themeEmerald: "मरकत हरा", themeAmber: "सुनहरा", themeDark: "मिडनाइट डार्क",
         themeEmeraldDark: "मरकत डार्क", themeAmberDark: "सुनहरा डार्क", themeMaroonDark: "क्लासिक महरून डार्क",
         savedNote: "आपका गाँव, थीम और भाषा इसी फ़ोन में सेव रहते हैं। ब्राउज़र डेटा साफ़ करने पर इन्हें दोबारा चुन लें।",
@@ -87,7 +86,6 @@ export const translations = {
     },
 
     ur: {
-        // ur
         home: "ہوم", timetable: "ٹائم ٹیبل", calendar: "کیلنڈر", settings: "ترتیبات",
         tableView: "ٹیبل", posterView: "پوسٹر", date: "تاریخ", sunriseShort: "طلوع",
         fajr: "فجر", sunrise: "طلوعِ آفتاب(فجر ختم)", zuhr: "ظہر", asr: "عصر", maghrib: "مغرب", isha: "عشاء",
@@ -111,7 +109,7 @@ export const translations = {
         sameAsCity: "عثمان آباد شہر کے وقت کے مطابق۔",
         earlier: "شہر کے وقت سے {n} منٹ پہلے۔",
         later: "شہر کے وقت سے {n} منٹ بعد۔",
-        theme: "تھیم", light: "لائٹ", dark: "ڈارک", language: "زبان",
+        theme: "تھیم", language: "زبان",
         themeClassic: "کلاسک نیلا", themeEmerald: "زمردی سبز", themeAmber: "سنہرا", themeDark: "مڈ نائٹ ڈارک",
         themeEmeraldDark: "زمردی ڈارک", themeAmberDark: "سنہرا ڈارک", themeMaroonDark: "مہرون ڈارک",
         savedNote: "آپ کا گاؤں، تھیم اور زبان اسی فون میں محفوظ رہتے ہیں۔ براؤزر ڈیٹا صاف کرنے پر انہیں دوبارہ منتخب کر لیں۔",

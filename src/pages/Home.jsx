@@ -133,7 +133,7 @@ function Home() {
 
     return (
         <div>
-            {!getVillage() && <p className="notice">{t("villageNotice")}</p>}
+            {!village && <p className="notice">{t("villageNotice")}</p>}
 
             <div className="hero-card">
                 <div className="hero-top">
@@ -230,7 +230,7 @@ function Home() {
                 })}
             </div>
 
-            {viewDate.getDay() === 5 && <p className="note">{t("fridayNote")}</p>}
+            {isViewFriday && <p className="note">{t("fridayNote")}</p>}
         </div>
     );
 }

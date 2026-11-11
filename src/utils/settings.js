@@ -2,7 +2,7 @@ import { villages } from "../data/villages.js";
 
 const mem = new Map();
 
-export function read(key, fallback) {
+function read(key, fallback) {
     try {
         const v = localStorage.getItem(key);
         return v === null ? fallback : v;
@@ -10,7 +10,7 @@ export function read(key, fallback) {
         return mem.has(key) ? mem.get(key) : fallback;
     }
 }
-export function write(key, value) {
+function write(key, value) {
     try {
         localStorage.setItem(key, value);
     } catch {

@@ -4,15 +4,9 @@ import { Download, X, Plus, Minus, Table, Image as ImageIcon, MapPin } from "luc
 import { useLang } from "../utils/i18n";
 import { getVillage } from "../utils/settings";
 import { getMonthTimes } from "../utils/times";
+import { formatTime } from "../utils/formatTime";
 
 const MAX_ZOOM = 4;
-
-function formatCell(time24) {
-  if (!time24) return "";
-  const [h, m] = time24.split(":").map(Number);
-  const h12 = h % 12 || 12;
-  return `\u2066${h12}:${String(m).padStart(2, "0")}\u2069`;
-}
 
 function Images() {
   const { t, lang } = useLang();
@@ -176,7 +170,7 @@ function Images() {
         ))}
       </div>
 
-      <div className={`tt-village-banner ${village && village.offset !== 0 ? "has-offset" : ""}`}>
+      <div className="tt-village-banner">
         <MapPin size={16} className="tt-village-icon" />
         <span className="tt-village-content">
           {village ? (
@@ -223,12 +217,12 @@ function Images() {
                       className={isToday ? "tt-row-today" : ""}
                     >
                       <td className="tt-col-date">{day}</td>
-                      <td>{formatCell(fajr)}</td>
-                      <td>{formatCell(sunrise)}</td>
-                      <td>{formatCell(zuhr)}</td>
-                      <td>{formatCell(asr)}</td>
-                      <td>{formatCell(maghrib)}</td>
-                      <td>{formatCell(isha)}</td>
+                      <td>{formatTime(fajr, false)}</td>
+                      <td>{formatTime(sunrise, false)}</td>
+                      <td>{formatTime(zuhr, false)}</td>
+                      <td>{formatTime(asr, false)}</td>
+                      <td>{formatTime(maghrib, false)}</td>
+                      <td>{formatTime(isha, false)}</td>
                     </tr>
                   );
                 })}

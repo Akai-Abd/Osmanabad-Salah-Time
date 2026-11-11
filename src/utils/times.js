@@ -1,9 +1,9 @@
 import { getTimes, prayerTimes } from "../data/prayerTimes.js";
 import { getVillageOffset } from "./settings.js";
+import { toMinutes } from "./toMinutes.js";
 
 function shift(time, delta) {
-    const [h, m] = time.split(":").map(Number);
-    const norm = (((h * 60 + m + delta) % 1440) + 1440) % 1440;
+    const norm = (((toMinutes(time) + delta) % 1440) + 1440) % 1440;
     const hh = String(Math.floor(norm / 60)).padStart(2, "0");
     const mm = String(norm % 60).padStart(2, "0");
     return `${hh}:${mm}`;
