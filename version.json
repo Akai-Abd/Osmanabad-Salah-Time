@@ -1,6 +1,5 @@
 {
-  "version": "1.0.0",
-  "notes": "Initial release of Osmanabad Salah Time.",
-  "apk_url": "https://github.com/Akai-Abd/Osmanabad-Salah-Time/releases/download/v1.0.0/app-release.apk"
+  "version": "1.0.1",
+  "notes": "Added Check for Updates button and App Version in Settings.",
+  "apk_url": "https://github.com/Akai-Abd/Osmanabad-Salah-Time/releases/download/v1.0.1/Osmanabad-Salah-Time-v1.0.1.apk"
 }
-
