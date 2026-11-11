@@ -51,6 +51,9 @@ export function applyTheme(theme) {
                 emerald: "#1E7E55",
                 amber: "#9E6C20",
                 dark: "#0F1B27",
+                "emerald-dark": "#0C1A14",
+                "amber-dark": "#1A150D",
+                "maroon-dark": "#1A0D11",
             };
             meta.setAttribute("content", colors[theme] || "#547FA5");
         }

@@ -928,6 +928,96 @@ body {
     --badge-ink: #0F1B27;
 }
 
+/* Emerald Green Dark */
+:root[data-theme="emerald-dark"] {
+    --bg: #0C1A14;
+    --surface: #142920;
+    --surface-glass: rgba(20, 41, 32, 0.85);
+    --border: #1E3D30;
+    --ink: #E5F3EC;
+    --muted: #84A897;
+    --primary: #2ECC71;
+    --on-primary: #0A1711;
+    --accent: #1E4D3A;
+    --danger: #FF6B5E;
+    --danger-bg: #3A1E1B;
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --hero-bg: linear-gradient(135deg, #1B4533 0%, #0D261B 100%);
+    --hero-shadow: rgba(0, 0, 0, 0.45);
+    --badge-bg: #2ECC71;
+    --badge-ink: #0A1711;
+}
+
+:root[data-theme="emerald-dark"] .hero-card {
+    border: 1px solid var(--border);
+}
+
+:root[data-theme="emerald-dark"] .prayer-tag.next {
+    background: var(--accent);
+    color: #FFFFFF;
+}
+
+/* Desert Gold Dark */
+:root[data-theme="amber-dark"] {
+    --bg: #1A150D;
+    --surface: #261F14;
+    --surface-glass: rgba(38, 31, 20, 0.85);
+    --border: #3D3220;
+    --ink: #F7EFE6;
+    --muted: #AD9E88;
+    --primary: #E6A23C;
+    --on-primary: #1A150D;
+    --accent: #4D3C20;
+    --danger: #FF6B5E;
+    --danger-bg: #3A1E1B;
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --hero-bg: linear-gradient(135deg, #4A3716 0%, #261B09 100%);
+    --hero-shadow: rgba(0, 0, 0, 0.45);
+    --badge-bg: #E6A23C;
+    --badge-ink: #1A150D;
+}
+
+:root[data-theme="amber-dark"] .hero-card {
+    border: 1px solid var(--border);
+}
+
+:root[data-theme="amber-dark"] .prayer-tag.next {
+    background: var(--accent);
+    color: #FFFFFF;
+}
+
+/* Classic Maroon Dark */
+:root[data-theme="maroon-dark"] {
+    --bg: #1A0D11;
+    --surface: #261419;
+    --surface-glass: rgba(38, 20, 25, 0.85);
+    --border: #3D1F27;
+    --ink: #FCEEF1;
+    --muted: #A88790;
+    --primary: #E05370;
+    --on-primary: #1A0D11;
+    --accent: #4D1F2A;
+    --danger: #FF6B5E;
+    --danger-bg: #3A1E1B;
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --hero-bg: linear-gradient(135deg, #4A1623 0%, #260911 100%);
+    --hero-shadow: rgba(0, 0, 0, 0.45);
+    --badge-bg: #E05370;
+    --badge-ink: #1A0D11;
+}
+
+:root[data-theme="maroon-dark"] .hero-card {
+    border: 1px solid var(--border);
+}
+
+:root[data-theme="maroon-dark"] .prayer-tag.next {
+    background: var(--accent);
+    color: #FFFFFF;
+}
+
 /* Current strip: red alert */
 .current-strip.danger {
     background: var(--danger);

@@ -28,10 +28,10 @@ function Settings() {
         .then((res) => res.json())
         .then((data) => {
           setChecking(false);
-          if (data.version && data.version !== "1.0.1") {
+          if (data.version && data.version !== "1.0.2") {
             setUpdateStatus(`Update available: v${data.version}`);
           } else {
-            setUpdateStatus("App is up to date (v1.0.1).");
+            setUpdateStatus("App is up to date (v1.0.2).");
           }
         })
         .catch(() => {
@@ -83,6 +83,9 @@ function Settings() {
             { id: "emerald", color: "#1E7E55", labelKey: "themeEmerald" },
             { id: "amber", color: "#9E6C20", labelKey: "themeAmber" },
             { id: "dark", color: "#172636", labelKey: "themeDark" },
+            { id: "emerald-dark", color: "#142920", labelKey: "themeEmeraldDark" },
+            { id: "amber-dark", color: "#261F14", labelKey: "themeAmberDark" },
+            { id: "maroon-dark", color: "#261419", labelKey: "themeMaroonDark" },
           ].map(({ id, color, labelKey }) => (
             <button
               key={id}
@@ -101,7 +104,7 @@ function Settings() {
         <div className="update-row">
           <div>
             <span className="update-label">{t("appVersion")}</span>
-            <span className="update-badge">v1.0.1</span>
+            <span className="update-badge">v1.0.2</span>
           </div>
           <button
             type="button"
