@@ -147,6 +147,4 @@ The APK will be generated at:
 `flutter_app/build/app/outputs/flutter-apk/app-release.apk`
 
 ---
-
-
-This project is licensed under the [MIT License](LICENSE).
+[MIT License](LICENSE).
